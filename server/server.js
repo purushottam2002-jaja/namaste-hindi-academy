@@ -1,9 +1,31 @@
+import dns from 'dns';
+try {
+  dns.setServers(['8.8.8.8', '8.8.4.4']);
+} catch (e) {
+  // Ignore in sandboxed runtimes
+}
+
 import express from 'express';
 import cors from 'cors';
+import mongoose from 'mongoose';
 import { store } from './data/store.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://purushottamjaga89_db_user:U9qAMlZzrNg5ifMz@cluster0.fyzycie.mongodb.net/namaste_hindi?retryWrites=true&w=majority&appName=Cluster0';
+
+// Connect to MongoDB Atlas
+mongoose.connect(MONGODB_URI)
+  .then(() => {
+    console.log('====================================================');
+    console.log('🍃 MONGODB ATLAS CLOUD CONNECTED SUCCESSFULLY!');
+    console.log('Cluster: cluster0.fyzycie.mongodb.net');
+    console.log('Database: namaste_hindi');
+    console.log('====================================================');
+  })
+  .catch((err) => {
+    console.warn('MongoDB connection note (running on persistent store):', err.message);
+  });
 
 // Middleware
 app.use(cors({
@@ -24,7 +46,7 @@ app.use((req, res, next) => {
 });
 
 /* ==========================================================================
-   REST API ROUTES (Swappable with MongoDB / PostgreSQL in the future)
+   REST API ROUTES
    ========================================================================== */
 
 // 1. System Health Check
@@ -32,7 +54,7 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'online',
     academy: 'Namaste Hindi Academy API',
-    architectExperience: '20+ Years',
+    database: mongoose.connection.readyState === 1 ? 'MongoDB Atlas Cloud Connected' : 'Persistent Storage Active',
     timestamp: new Date().toISOString()
   });
 });
@@ -75,12 +97,12 @@ app.get('/api/testimonials', (req, res) => {
   });
 });
 
-app.post('/api/testimonials', (req, res) => {
-  const { name, country, role, quote, courseTaken, rating } = req.body;
+app.post('/api/testimonials', async (req, res) => {
+  const { name, quote } = req.body;
   if (!name || !quote) {
     return res.status(400).json({ success: false, message: 'Name and quote are required' });
   }
-  const created = store.addTestimonial(req.body);
+  const created = await store.addTestimonial(req.body);
   res.status(201).json({
     success: true,
     message: 'Thank you for your review! It has been posted to our global wall.',
@@ -111,7 +133,7 @@ app.get('/api/faqs', (req, res) => {
 });
 
 // 7. Demo Class Booking API (Instant Zoom Confirmation)
-app.post('/api/bookings', (req, res) => {
+app.post('/api/bookings', async (req, res) => {
   const { name, email, whatsapp, timezone, preferredSlot, goal, currentLevel, nativeLanguage } = req.body;
   
   if (!name || !email || !timezone) {
@@ -121,8 +143,7 @@ app.post('/api/bookings', (req, res) => {
     });
   }
 
-  // Create booking with confirmed receipt
-  const booking = store.addBooking({
+  const booking = await store.addBooking({
     name,
     email,
     whatsapp: whatsapp || 'Not provided',
@@ -148,7 +169,7 @@ app.get('/api/bookings', (req, res) => {
 });
 
 // 8. Contact & General Inquiries API
-app.post('/api/inquiries', (req, res) => {
+app.post('/api/inquiries', async (req, res) => {
   const { name, email, subject, message, organization } = req.body;
   if (!name || !email || !message) {
     return res.status(400).json({
@@ -157,7 +178,7 @@ app.post('/api/inquiries', (req, res) => {
     });
   }
 
-  const inquiry = store.addInquiry({
+  const inquiry = await store.addInquiry({
     name,
     email,
     subject: subject || 'General Question',
@@ -173,7 +194,7 @@ app.post('/api/inquiries', (req, res) => {
 });
 
 // 9. Newsletter & Lead Magnet Download API
-app.post('/api/newsletter', (req, res) => {
+app.post('/api/newsletter', async (req, res) => {
   const { email } = req.body;
   if (!email || !email.includes('@')) {
     return res.status(400).json({
@@ -182,7 +203,7 @@ app.post('/api/newsletter', (req, res) => {
     });
   }
 
-  const result = store.addSubscriber(email);
+  const result = await store.addSubscriber(email);
   res.json({
     success: true,
     message: 'Success! Your free 25-Page Expat Survival Hindi Cheatsheet PDF link has been sent.',
@@ -195,6 +216,5 @@ app.listen(PORT, () => {
   console.log(`====================================================`);
   console.log(`🚀 NAMASTE HINDI ACADEMY BACKEND RUNNING ON PORT ${PORT}`);
   console.log(`📡 Base API URL: http://localhost:${PORT}/api`);
-  console.log(`💾 Data Store Engine: File-Persisted In-Memory DB (Ready for MongoDB/Postgres)`);
   console.log(`====================================================`);
 });

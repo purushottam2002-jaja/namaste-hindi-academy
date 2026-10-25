@@ -1,10 +1,61 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import mongoose from 'mongoose';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const DB_FILE = path.join(__dirname, 'db.json');
+
+// Mongoose Schemas for MongoDB Atlas
+const bookingSchema = new mongoose.Schema({
+  bookingId: String,
+  name: String,
+  email: String,
+  whatsapp: String,
+  timezone: String,
+  preferredSlot: String,
+  goal: String,
+  currentLevel: String,
+  nativeLanguage: String,
+  status: { type: String, default: 'confirmed' },
+  zoomLink: String,
+  createdAt: { type: Date, default: Date.now }
+});
+
+const inquirySchema = new mongoose.Schema({
+  inquiryId: String,
+  name: String,
+  email: String,
+  subject: String,
+  message: String,
+  organization: String,
+  createdAt: { type: Date, default: Date.now }
+});
+
+const subscriberSchema = new mongoose.Schema({
+  email: { type: String, unique: true },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const testimonialSchema = new mongoose.Schema({
+  name: String,
+  country: String,
+  flag: String,
+  role: String,
+  avatar: String,
+  quote: String,
+  courseTaken: String,
+  rating: Number,
+  date: String,
+  verified: Boolean,
+  createdAt: { type: Date, default: Date.now }
+});
+
+export const BookingModel = mongoose.model('Booking', bookingSchema);
+export const InquiryModel = mongoose.model('Inquiry', inquirySchema);
+export const SubscriberModel = mongoose.model('Subscriber', subscriberSchema);
+export const TestimonialModel = mongoose.model('Testimonial', testimonialSchema);
 
 // Initial seed data with rich real-world enterprise content
 const initialData = {
@@ -346,22 +397,7 @@ const initialData = {
       answer: "It is 100% free with no credit card required. You get 30 minutes of real, personalized 1-on-1 interaction with Guru Ji. He analyzes your native linguistic background (e.g. how German, French, or English speakers shape vowels), provides an instant tongue-placement diagnosis, and teaches you 3 high-impact phrases. You decide afterwards if you wish to enroll."
     }
   ],
-  bookings: [
-    {
-      id: "DEMO-8021",
-      name: "Alexander Wright",
-      email: "alex.wright@ukembassy.org",
-      whatsapp: "+44 7911 123456",
-      timezone: "UK GMT (London)",
-      preferredSlot: "Evening (7:00 PM - 10:00 PM)",
-      nativeLanguage: "English",
-      goal: "Diplomatic & Embassy Work in New Delhi",
-      currentLevel: "Absolute Beginner",
-      status: "confirmed",
-      zoomLink: "https://zoom.us/j/9876543210?pwd=NAMASTE-GURUJI",
-      createdAt: "2026-10-25T14:30:00.000Z"
-    }
-  ],
+  bookings: [],
   inquiries: [],
   subscribers: []
 };
@@ -395,7 +431,6 @@ class DataStore {
     }
   }
 
-  // Repository Methods - Ready to swap with MongoDB / PostgreSQL
   getStats() {
     return this.data.stats;
   }
@@ -420,7 +455,7 @@ class DataStore {
     return this.data.testimonials;
   }
 
-  addTestimonial(testimonial) {
+  async addTestimonial(testimonial) {
     const newTestimonial = {
       id: Date.now(),
       name: testimonial.name || "Anonymous Learner",
@@ -436,6 +471,16 @@ class DataStore {
     };
     this.data.testimonials.unshift(newTestimonial);
     this.save();
+
+    // Async save to MongoDB if connected
+    try {
+      if (mongoose.connection.readyState === 1) {
+        await TestimonialModel.create(newTestimonial);
+      }
+    } catch (e) {
+      console.warn("MongoDB Testimonial save notice:", e.message);
+    }
+
     return newTestimonial;
   }
 
@@ -464,7 +509,7 @@ class DataStore {
     return list;
   }
 
-  addBooking(bookingData) {
+  async addBooking(bookingData) {
     const bookingId = "DEMO-" + Math.floor(1000 + Math.random() * 9000);
     const newBooking = {
       id: bookingId,
@@ -474,8 +519,22 @@ class DataStore {
       createdAt: new Date().toISOString()
     };
     this.data.bookings.unshift(newBooking);
-    this.data.stats.studentsTrained += 1; // Increment live community count
+    this.data.stats.studentsTrained += 1;
     this.save();
+
+    // Async save to MongoDB if connected
+    try {
+      if (mongoose.connection.readyState === 1) {
+        await BookingModel.create({
+          bookingId: newBooking.id,
+          ...bookingData,
+          zoomLink: newBooking.zoomLink
+        });
+      }
+    } catch (e) {
+      console.warn("MongoDB Booking save notice:", e.message);
+    }
+
     return newBooking;
   }
 
@@ -483,7 +542,7 @@ class DataStore {
     return this.data.bookings;
   }
 
-  addInquiry(inquiryData) {
+  async addInquiry(inquiryData) {
     const newInquiry = {
       id: "INQ-" + Date.now(),
       ...inquiryData,
@@ -491,14 +550,37 @@ class DataStore {
     };
     this.data.inquiries.unshift(newInquiry);
     this.save();
+
+    // Async save to MongoDB if connected
+    try {
+      if (mongoose.connection.readyState === 1) {
+        await InquiryModel.create({
+          inquiryId: newInquiry.id,
+          ...inquiryData
+        });
+      }
+    } catch (e) {
+      console.warn("MongoDB Inquiry save notice:", e.message);
+    }
+
     return newInquiry;
   }
 
-  addSubscriber(email) {
+  async addSubscriber(email) {
     if (!this.data.subscribers.includes(email)) {
       this.data.subscribers.push(email);
       this.save();
     }
+
+    // Async save to MongoDB if connected
+    try {
+      if (mongoose.connection.readyState === 1) {
+        await SubscriberModel.updateOne({ email }, { email }, { upsert: true });
+      }
+    } catch (e) {
+      console.warn("MongoDB Subscriber save notice:", e.message);
+    }
+
     return { success: true, email };
   }
 }
