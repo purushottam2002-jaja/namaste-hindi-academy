@@ -23,7 +23,7 @@ export default function Footer() {
             </p>
             <div style={{ display: 'flex', gap: '0.75rem' }}>
               <a
-                href="https://wa.me/919876543210"
+                href="https://wa.me/917665441102"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-secondary"
@@ -70,7 +70,7 @@ export default function Footer() {
               <li><strong>Australia &amp; Japan:</strong> Flexible slots</li>
             </ul>
             <div style={{ fontSize: '0.9rem', color: 'var(--color-primary)', fontWeight: 600 }}>
-              Email: classes@namastehindi.academy
+              Email: purushottamjaga89@gmail.com
             </div>
           </div>
         </div>

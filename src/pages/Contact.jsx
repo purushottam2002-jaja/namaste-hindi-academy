@@ -176,7 +176,7 @@ export default function Contact() {
 
                   <div className="receipt-actions">
                     <a
-                      href={`https://wa.me/919876543210?text=Namaste%20Guru%20Ji,%20I%20have%20booked%20my%20demo%20(ID:%20${confirmedBooking.id}).`}
+                      href={`https://wa.me/917665441102?text=Namaste%20Guru%20Ji,%20I%20have%20booked%20my%20demo%20(ID:%20${confirmedBooking.id}).`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn"
@@ -366,12 +366,12 @@ export default function Contact() {
                     Message Pandit Rajeshwar Sharma (Guru Ji) directly on WhatsApp for urgent queries.
                   </p>
                   <a
-                    href="https://wa.me/919876543210?text=Namaste%20Guru%20Ji,%20I%20have%20a%20quick%20question%20about%20classes."
+                    href="https://wa.me/917665441102?text=Namaste%20Guru%20Ji,%20I%20have%20a%20quick%20question%20about%20classes."
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{ fontSize: '0.85rem', fontWeight: 700, color: '#16a34a', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}
                   >
-                    Open WhatsApp Chat (+91 98765 43210) &rarr;
+                    Open WhatsApp Chat (+91 76654 41102) &rarr;
                   </a>
                 </div>
               </div>
@@ -486,8 +486,8 @@ export default function Contact() {
               </div>
               <h4 style={{ fontWeight: 800, marginBottom: '0.25rem' }}>Direct Email</h4>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>For formal proposals &amp; receipts</p>
-              <a href="mailto:guruji@namastehindi.academy" style={{ fontWeight: 700, color: 'var(--brand-primary)' }}>
-                guruji@namastehindi.academy
+              <a href="mailto:purushottamjaga89@gmail.com" style={{ fontWeight: 700, color: 'var(--brand-primary)' }}>
+                purushottamjaga89@gmail.com
               </a>
             </div>
 
@@ -497,8 +497,8 @@ export default function Contact() {
               </div>
               <h4 style={{ fontWeight: 800, marginBottom: '0.25rem' }}>WhatsApp Helpline</h4>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>Fast responses 7 days a week</p>
-              <a href="https://wa.me/919876543210" style={{ fontWeight: 700, color: '#16a34a' }}>
-                +91 98765 43210
+              <a href="https://wa.me/917665441102" style={{ fontWeight: 700, color: '#16a34a' }}>
+                +91 76654 41102
               </a>
             </div>
 

@@ -53,14 +53,14 @@ export default function Navbar() {
 
           <div className="top-banner-right">
             <a
-              href="https://wa.me/919876543210?text=Namaste%20Guru%20Ji,%20I%20want%20to%20learn%20Hindi"
+              href="https://wa.me/917665441102?text=Namaste%20Guru%20Ji,%20I%20want%20to%20learn%20Hindi"
               target="_blank"
               rel="noopener noreferrer"
               className="top-wa-link"
               aria-label="Direct WhatsApp helpline"
             >
               <MessageCircle size={14} color="#25D366" />
-              <span>WhatsApp: <strong>+91 98765 43210</strong></span>
+              <span>WhatsApp: <strong>+91 76654 41102</strong></span>
             </a>
           </div>
         </div>
@@ -141,7 +141,7 @@ export default function Navbar() {
 
             {/* Quick WhatsApp Pill */}
             <a
-              href="https://wa.me/919876543210?text=Namaste%20Guru%20Ji,%20I%20want%20to%20learn%20Hindi"
+              href="https://wa.me/917665441102?text=Namaste%20Guru%20Ji,%20I%20want%20to%20learn%20Hindi"
               target="_blank"
               rel="noopener noreferrer"
               className="quick-wa-btn"
@@ -218,7 +218,7 @@ export default function Navbar() {
                 <Sparkles size={16} /> Book Free 30-Min Demo
               </Link>
               <a
-                href="https://wa.me/919876543210?text=Namaste%20Guru%20Ji,%20I%20want%20to%20learn%20Hindi"
+                href="https://wa.me/917665441102?text=Namaste%20Guru%20Ji,%20I%20want%20to%20learn%20Hindi"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="drawer-wa-btn"
